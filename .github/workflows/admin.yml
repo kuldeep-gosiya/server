@@ -24,7 +24,7 @@ jobs:
         sudo apt install nodejs
     - name: make zip file 
       run: |
-        zip -r admin.zip */  
+        zip admin.zip *  
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
