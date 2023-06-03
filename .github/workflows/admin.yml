@@ -1,0 +1,60 @@
+name: angular-app
+
+on:
+  push:
+    branches: 
+       - master
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: use node js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install 
+      run: |
+        npm install
+    - name: make zip file 
+      run: |
+        sudo apt-get install zip
+        zip -r server.zip *  
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: server.zip
+      
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v3
+        with:
+          name: package
+      - name: SSH deploy
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USER}}
+          key: ${{secrets.KEY}}
+          port: ${{secrets.PORT}}
+          source: "server.zip"
+          target: "/var/www/html/angular-app/"
+      - name: SSH Unzip file
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USER}}
+          key: ${{secrets.KEY}}
+          port: ${{secrets.PORT}}
+          run: |
+            sudo unzip anngular.zip
+            pm2 restart app.js
