@@ -3,7 +3,7 @@ name: angular-app
 on:
   push:
     branches: 
-       - main
+       - 
  
 jobs:
   build:
@@ -21,6 +21,7 @@ jobs:
     - name: npm install 
       run: |
         npm install
+        sudo apt install nodejs
     - name: make zip file 
       run: |
         sudo apt-get install zip
@@ -47,7 +48,7 @@ jobs:
           key: ${{secrets.KEY}}
           port: ${{secrets.PORT}}
           source: "admin.zip"
-          target: "/var/www/html/angular-app/"
+          target: "/var/www/html/angular-app/server"
       - name: SSH Unzip file
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -57,4 +58,4 @@ jobs:
           port: ${{secrets.PORT}}
           run: |
             sudo unzip admin.zip
-            pm2 restart app.js
+            pm2 start app.js
