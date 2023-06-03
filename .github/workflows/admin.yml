@@ -57,5 +57,5 @@ jobs:
           port: ${{secrets.PORT}}
           source: "admin.zip"
           target: "/var/www/html/angular-app/"
-          script: |
+          run: |
             sudo unzip admin.zip
