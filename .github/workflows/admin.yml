@@ -24,7 +24,7 @@ jobs:
         sudo apt install nodejs
     - name: make zip file 
       run: |
-        zip admin.zip */  
+        zip admin.zip /*  
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -48,6 +48,14 @@ jobs:
           port: ${{secrets.PORT}}
           source: "admin.zip"
           target: "/var/www/html/angular-app/"
-          run: |
+      - name: ssh unzip file
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USER}}
+          key: ${{secrets.KEY}}
+          port: ${{secrets.PORT}}
+          source: "admin.zip"
+          target: "/var/www/html/angular-app/"
+          script: |
             sudo unzip admin.zip
-            pm2 start app.js
