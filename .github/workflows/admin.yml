@@ -24,12 +24,12 @@ jobs:
     - name: make zip file 
       run: |
         sudo apt-get install zip
-        zip -r server.zip *  
+        zip -r admin.zip *  
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
         name: package
-        path: server.zip
+        path: admin.zip
       
   deploy:
     needs: build
@@ -46,7 +46,7 @@ jobs:
           username: ${{secrets.USER}}
           key: ${{secrets.KEY}}
           port: ${{secrets.PORT}}
-          source: "server.zip"
+          source: "admin.zip"
           target: "/var/www/html/angular-app/"
       - name: SSH Unzip file
         uses: appleboy/ssh-action@v0.1.10
@@ -56,5 +56,5 @@ jobs:
           key: ${{secrets.KEY}}
           port: ${{secrets.PORT}}
           run: |
-            sudo unzip anngular.zip
+            sudo unzip admin.zip
             pm2 restart app.js
